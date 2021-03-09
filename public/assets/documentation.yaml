@@ -1,0 +1,1182 @@
+openapi: 3.0.0
+
+info:
+  title: MTAA APP
+  description: REST API documentation by Peter Škríba & Filip Čaplák.
+  version: 1.0.0
+
+servers:
+  - url: https://mtaa-app-backend.herokuapp.com
+    description: Main API endpoint.
+  - url: http://127.0.0.1:4466
+    description: Localhost API endpoint.
+
+tags:
+  - name: 'Authentication'
+  - name: 'Services'
+  - name: 'Orders'
+  - name: 'Items'
+  - name: 'Cart'
+  - name: 'Profile'
+
+paths:
+  /signin:
+    post:
+      tags:
+        - 'Authentication'
+      summary: Returns a logged user and auth token.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password
+              required:
+                - email
+                - password
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthPayload'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                  token:
+                    type: string
+                    example: null
+
+  /signup/customer:
+    post:
+      tags:
+        - 'Authentication'
+      summary: Creates customer and generates auth token.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                email:
+                  type: string
+                  format: email
+                  example: johndoe@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password
+              required:
+                - first_name
+                - last_name
+                - email
+                - password
+
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthPayload'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                  token:
+                    type: string
+                    example: null
+
+  /signup/service:
+    post:
+      tags:
+        - 'Authentication'
+      summary: Creates service and generates auth token.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  example: Pizza town
+                category:
+                  $ref: '#/components/schemas/ServiceCategory'
+                email:
+                  type: string
+                  format: email
+                  example: pizzatown@example.com
+                password:
+                  type: string
+                  format: password
+                  example: password
+              required:
+                - name
+                - category
+                - email
+                - password
+
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AuthPayload'
+        '401':
+          description: Unauthorized.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user:
+                    type: object
+                  token:
+                    type: string
+                    example: null
+
+  /me:
+    get:
+      tags:
+        - 'Authentication'
+      summary: Returns logged user information.
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  email:
+                    type: string
+                    format: email
+                    example: johndoe@example.com
+                  first_name:
+                    type: string
+                    example: John
+                  last_name:
+                    type: string
+                    example: Doe
+                  role:
+                    type: string
+                    enum: [CUSTOMER, SERVICE]
+                    example: CUSTOMER
+        '401':
+          description: Unauthorized.
+
+  /services:
+    get:
+      tags:
+        - 'Services'
+      summary: Returns list of services according to filter.
+
+      parameters:
+        - in: query
+          name: favorites
+          description: Returns favorite services.
+          schema:
+            type: boolean
+            example: false
+        - in: query
+          name: search
+          description: Returns services which names match the given string.
+          schema:
+            type: string
+            example: Pizza
+        - in: query
+          name: category
+          description: Returns services which belongs to selected category.
+          schema:
+            $ref: '#/components/schemas/ServiceCategory'
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/ID'
+                    name:
+                      type: string
+                      example: Pizza town
+                    picture:
+                      type: string
+                    rating:
+                      type: number
+                      example: 4.5
+                    category:
+                      $ref: '#/components/schemas/ServiceCategory'
+        '400':
+          description: Bad Request.
+
+  /services/{id}:
+    get:
+      tags:
+        - 'Services'
+      summary: Returns service detail.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Service id.
+          schema:
+            $ref: '#/components/schemas/ID'
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  email:
+                    type: string
+                    format: email
+                    example: pizzatown@example.com
+                  name:
+                    type: string
+                    example: Pizza town
+                  picture:
+                    type: string
+                  phone:
+                    type: string
+                    example: 0917 787 236
+                  web:
+                    type: string
+                    example: www.pizzatown.com
+                  category:
+                    $ref: '#/components/schemas/ServiceCategory'
+                  address:
+                    type: object
+                    properties:
+                      country:
+                        type: string
+                        example: Slovakia
+                      city:
+                        type: string
+                        example: Bratislava
+                      address:
+                        type: string
+                        example: Janka Kráľa 553/5
+                      postal_code:
+                        type: number
+                        example: 95806
+        '404':
+          description: Not Found.
+
+    delete:
+      tags:
+        - 'Services'
+      summary: Removes service from favorites.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Service id.
+          schema:
+            $ref: '#/components/schemas/ID'
+
+      responses:
+        '204':
+          description: No Content.
+        '404':
+          description: Not Found.
+
+  /services/{id}/menu:
+    get:
+      tags:
+        - 'Services'
+      summary: Returns list of items of given service.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Service id.
+          schema:
+            $ref: '#/components/schemas/ID'
+        - in: query
+          name: search
+          description: Returns services which names match the given string.
+          schema:
+            type: string
+            example: Pizza
+        - in: query
+          name: category
+          description: Returns services which belongs to selected category.
+          schema:
+            $ref: '#/components/schemas/ServiceCategory'
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/ID'
+                    name:
+                      type: string
+                      example: Chicken wings
+                    picture:
+                      type: string
+                    price:
+                      type: number
+                      example: 4.99
+                    category:
+                      $ref: '#/components/schemas/ItemCategory'
+        '404':
+          description: Not found.
+
+  /services/favorite:
+    post:
+      tags:
+        - 'Services'
+      summary: Add service to favorites.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/ID'
+              required:
+                - id
+
+      responses:
+        '204':
+          description: No Content.
+        '404':
+          description: Not Found.
+
+  /orders:
+    get:
+      tags:
+        - 'Orders'
+      summary: Returns a list of orders.
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/ID'
+                    status:
+                      $ref: '#/components/schemas/Status'
+                    payment:
+                      $ref: '#/components/schemas/Payment'
+                    createdAt:
+                      type: string
+                      format: date-time
+                    completedAt:
+                      type: string
+                      format: date-time
+                    customer:
+                      type: object
+                      properties:
+                        email:
+                          type: string
+                          format: email
+                          example: johndoe@example.com
+                        first_name:
+                          type: string
+                          example: John
+                        last_name:
+                          type: string
+                          example: Doe
+                    items:
+                      type: object
+                      properties:
+                        count:
+                          type: number
+                          example: 3
+                        price:
+                          type: number
+                          example: 15.99
+
+  /orders/{id}:
+    get:
+      tags:
+        - 'Orders'
+      summary: Returns order detail.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Order id.
+          schema:
+            $ref: '#/components/schemas/ID'
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  payment:
+                    $ref: '#/components/schemas/Payment'
+                  createdAt:
+                    type: string
+                    format: date-time
+                  completedAt:
+                    type: string
+                    format: date-time
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/ID'
+                        amount:
+                          type: number
+                          example: 2
+                        item:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: Chicken wings
+                            price:
+                              type: number
+                              example: 12.99
+                            time:
+                              type: number
+                              example: 30
+                            category:
+                              $ref: '#/components/schemas/ItemCategory'
+                  customer:
+                    type: object
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/ID'
+                      email:
+                        type: string
+                        format: email
+                        example: johndoe@example.com
+                      first_name:
+                        type: string
+                        example: John
+                      last_name:
+                        type: string
+                        example: Doe
+                      phone:
+                        type: string
+                        example: 0917 787 236
+                      address:
+                        type: object
+                        properties:
+                          country:
+                            type: string
+                            example: Slovakia
+                          city:
+                            type: string
+                            example: Bratislava
+                          address:
+                            type: string
+                            example: Janka Kráľa 553/5
+                          postal_code:
+                            type: number
+                            example: 95806
+        '404':
+          description: Not Found.
+
+  /orders/status:
+    put:
+      tags:
+        - 'Orders'
+      summary: Updates order status.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/ID'
+                status:
+                  $ref: '#/components/schemas/Status'
+              required:
+                - id
+                - status
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  status:
+                    $ref: '#/components/schemas/Status'
+        '404':
+          description: Not found.
+
+  /items:
+    get:
+      tags:
+        - 'Items'
+      summary: Returns list of items.
+
+      parameters:
+        - in: query
+          name: search
+          description: Returns services which names match the given string.
+          schema:
+            type: string
+            example: Chicken
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/ID'
+                    name:
+                      type: string
+                      example: Chicken
+                    picture:
+                      type: string
+                    price:
+                      type: number
+                      example: 4.99
+                    category:
+                      $ref: '#/components/schemas/ItemCategory'
+
+  /items/{id}:
+    get:
+      tags:
+        - 'Items'
+      summary: Returns item detail.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Item id.
+          schema:
+            $ref: '#/components/schemas/ID'
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  name:
+                    type: string
+                    example: Pizza jalapenos
+                  description:
+                    type: string
+                  picture:
+                    type: string
+                  price:
+                    type: number
+                    example: 6.75
+                  weight:
+                    type: number
+                    example: 600
+                  time:
+                    type: number
+                    example: 15
+                  category:
+                    $ref: '#/components/schemas/ItemCategory'
+
+    delete:
+      tags:
+        - 'Items'
+      summary: Deletes item.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Item id.
+          schema:
+            $ref: '#/components/schemas/ID'
+
+      responses:
+        '204':
+          description: No Content.
+        '404':
+          description: Not Found.
+
+  /items/item:
+    post:
+      tags:
+        - 'Items'
+      summary: Creates item.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                name:
+                  type: string
+                  example: Meal
+                price:
+                  type: number
+                  example: 5.00
+                categories:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ItemCategory'
+                weight:
+                  type: number
+                  example: 400
+                time:
+                  type: number
+                  example: 30
+                description:
+                  type: string
+              required:
+                - name
+                - price
+                - weight
+                - categories
+
+      responses:
+        '201':
+          description: Created.
+        '400':
+          description: Bad Request.
+
+  /cart:
+    get:
+      tags:
+        - 'Cart'
+      summary: Returns cart information.
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  payment:
+                    $ref: '#/components/schemas/Payment'
+                  status:
+                    $ref: '#/components/schemas/Status'
+                  createdAt:
+                    type: string
+                    format: date-time
+                  completedAt:
+                    type: string
+                    format: date-time
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/ID'
+                        amount:
+                          type: number
+                          example: 2
+                        item:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              example: Chicken arms
+                            picture:
+                              type: string
+                            price:
+                              type: number
+                              example: 9.99
+                            category:
+                              $ref: '#/components/schemas/ItemCategory'
+                  customer:
+                    type: object
+                    properties:
+                      payment:
+                        $ref: '#/components/schemas/Payment'
+                      address:
+                        type: object
+                        properties:
+                          country:
+                            type: string
+                            example: Slovakia
+                          city:
+                            type: string
+                            example: Bratislava
+                          address:
+                            type: string
+                            example: Janka Kráľa 553/5
+                          postal_code:
+                            type: number
+                            example: 95806
+
+  /cart/{id}:
+    delete:
+      tags:
+        - 'Cart'
+      summary: Removes item from cart.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Item id.
+          schema:
+            $ref: '#/components/schemas/ID'
+
+      responses:
+        '204':
+          description: No Content.
+        '404':
+          description: Not Found.
+
+  /cart/item:
+    post:
+      tags:
+        - 'Cart'
+      summary: Add item to cart.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/ID'
+              required:
+                - id
+
+      responses:
+        '201':
+          description: Created.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  amount:
+                    type: number
+                    example: 1
+                  item:
+                    type: object
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/ID'
+        '404':
+          description: Not Found.
+        '400':
+          description: Bad Request.
+
+  /cart/pay:
+    post:
+      tags:
+        - 'Cart'
+      summary: Move cart to orders.
+
+      responses:
+        '201':
+          description: OK.
+        '404':
+          description: Not Found.
+
+  /profile/customer:
+    get:
+      tags:
+        - 'Profile'
+      summary: Returns customer profile informations.
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  email:
+                    type: string
+                    format: email
+                    example: johndoe@example.com
+                  first_name:
+                    type: string
+                    example: John
+                  last_name:
+                    type: string
+                    example: Doe
+                  phone:
+                    type: string
+                    example: 0917 787 236
+                  payment:
+                    $ref: '#/components/schemas/Payment'
+                  address:
+                    type: object
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/ID'
+                      country:
+                        type: string
+                        example: Slovakia
+                      city:
+                        type: string
+                        example: Bratislava
+                      address:
+                        type: string
+                        example: Janka Kráľa 553/5
+                      postal_code:
+                        type: number
+                        example: 95806
+
+    put:
+      tags:
+        - 'Profile'
+      summary: Updates customer profile informations.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                first_name:
+                  type: string
+                  example: John
+                last_name:
+                  type: string
+                  example: Doe
+                phone:
+                  type: string
+                  example: 0917 787 236
+                payment:
+                  $ref: '#/components/schemas/Payment'
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  first_name:
+                    type: string
+                    example: John
+                  last_name:
+                    type: string
+                    example: Doe
+                  phone:
+                    type: string
+                    example: 0917 787 236
+                  payment:
+                    $ref: '#/components/schemas/Payment'
+        '400':
+          description: Bad Request.
+
+  /profile/service:
+    get:
+      tags:
+        - 'Profile'
+      summary: Returns service profile informations.
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  picture:
+                    type: string
+                  email:
+                    type: string
+                    format: email
+                    example: pizzatown@example.com
+                  name:
+                    type: string
+                    example: Pizza Town
+                  phone:
+                    type: string
+                    example: 0917 787 236
+                  web:
+                    type: string
+                    example: www.pizzatown.com
+                  address:
+                    type: object
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/ID'
+                      country:
+                        type: string
+                        example: Slovakia
+                      city:
+                        type: string
+                        example: Bratislava
+                      address:
+                        type: string
+                        example: Janka Kráľa 553/5
+                      postal_code:
+                        type: number
+                        example: 95806
+
+    put:
+      tags:
+        - 'Profile'
+      summary: Updates service profile informations.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                picture:
+                  type: string
+                name:
+                  type: string
+                  example: Pizza Town
+                phone:
+                  type: string
+                  example: 0917 787 236
+                web:
+                  type: string
+                  example: www.pizzatown.com
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  picture:
+                    type: string
+                  name:
+                    type: string
+                    example: Pizza Town
+                  phone:
+                    type: string
+                    example: 0917 787 236
+                  web:
+                    type: string
+                    example: www.pizzatown.com
+        '400':
+          description: Bad Request.
+
+  /profile/address:
+    post:
+      tags:
+        - 'Profile'
+      summary: Upserts address.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  $ref: '#/components/schemas/ID'
+                country:
+                  type: string
+                  example: Slovakia
+                city:
+                  type: string
+                  example: Bratislava
+                address:
+                  type: string
+                  example: Janka Kráľa 553/5
+                postal_code:
+                  type: number
+                  example: 95806
+              required:
+                - country
+                - city
+                - address
+                - postal_code
+
+      responses:
+        '201':
+          description: 'Created/Edited'
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  country:
+                    type: string
+                    example: Slovakia
+                  city:
+                    type: string
+                    example: Bratislava
+                  address:
+                    type: string
+                    example: Janka Kráľa 553/5
+                  postal_code:
+                    type: number
+                    example: 95806
+
+components:
+  schemas:
+    AuthPayload:
+      properties:
+        user:
+          type: object
+          properties:
+            id:
+              $ref: '#/components/schemas/ID'
+            email:
+              type: string
+              format: email
+              example: johndoe@example.com
+            role:
+              type: string
+              enum: [CUSTOMER, SERVICE]
+              example: CUSTOMER
+        token:
+          type: string
+          example: eyJhbGciOiJIezI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI2OGRkNGM2LTVmN2ItNDFjZC04OGI4LTcxMDcwZWE345U3NSIsImVtYWlsIjoiam9obmJvdGhAZXhhbXBsZS5jb20iLCJpYXQiOjE2MTQ5NjIxNTcfemV4cCI6MTYxNzU1NDE1N30.-tlQW2ZUJRHWJ6o1R1_BX2D_CuUBpauoHLr1bd13Ifg
+
+    ID:
+      type: string
+      format: uuid
+      example: 123e4567-e89b-12d3-a456-426614174000
+
+    Status:
+      type: string
+      enum:
+        - WAITING
+        - READY
+        - CONFIRMED
+        - SENT
+        - COMPLETED
+      example: WAITING
+
+    Payment:
+      type: string
+      enum:
+        - CASH
+        - CARD
+        - ONLINE
+      example: CASH
+
+    ServiceCategory:
+      type: string
+      enum:
+        - PIZZA
+        - RESTAURANT
+        - CANTEEN
+        - DELIVERY
+        - PATTISERIE
+        - PUB
+        - FASTFOOD
+      example: PIZZA
+
+    ItemCategory:
+      type: string
+      enum:
+        - PIZZA
+        - DRINK
+        - SOUP
+        - MEAT
+        - DESSERT
+      example: PIZZA
