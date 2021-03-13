@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   title: MTAA APP
   description: REST API documentation by Peter Škríba & Filip Čaplák.
-  version: 1.0.0
+  version: 1.1.0
 
 servers:
   - url: https://mtaa-app-backend.herokuapp.com
@@ -623,6 +623,50 @@ paths:
                     category:
                       $ref: '#/components/schemas/ItemCategory'
 
+    post:
+      tags:
+        - 'Items'
+      summary: Creates item.
+
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                photo:
+                  type: string
+                name:
+                  type: string
+                  example: Meal
+                price:
+                  type: number
+                  example: 5.00
+                categories:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ItemCategory'
+                weight:
+                  type: number
+                  example: 400
+                time:
+                  type: number
+                  example: 30
+                description:
+                  type: string
+              required:
+                - name
+                - price
+                - weight
+                - categories
+
+      responses:
+        '201':
+          description: Created.
+        '400':
+          description: Bad Request.
+
   /items/{id}:
     get:
       tags:
@@ -684,51 +728,6 @@ paths:
           description: No Content.
         '404':
           description: Not Found.
-
-  /items/item:
-    post:
-      tags:
-        - 'Items'
-      summary: Creates item.
-
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                photo:
-                  type: string
-                name:
-                  type: string
-                  example: Meal
-                price:
-                  type: number
-                  example: 5.00
-                categories:
-                  type: array
-                  items:
-                    $ref: '#/components/schemas/ItemCategory'
-                weight:
-                  type: number
-                  example: 400
-                time:
-                  type: number
-                  example: 30
-                description:
-                  type: string
-              required:
-                - name
-                - price
-                - weight
-                - categories
-
-      responses:
-        '201':
-          description: Created.
-        '400':
-          description: Bad Request.
 
   /cart:
     get:
