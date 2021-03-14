@@ -4,4 +4,4 @@
 
 [YAML file](public/assets/documentation.yaml)
 
-[UAT](public/assets/documentation/UAT.pdf)
+[UAT](public/assets/UAT.pdf)
