@@ -799,27 +799,6 @@ paths:
                             type: number
                             example: 95806
 
-  /cart/{id}:
-    delete:
-      tags:
-        - 'Cart'
-      summary: Removes item from cart.
-
-      parameters:
-        - name: id
-          in: path
-          required: true
-          description: Item id.
-          schema:
-            $ref: '#/components/schemas/ID'
-
-      responses:
-        '204':
-          description: No Content.
-        '404':
-          description: Not Found.
-
-  /cart/item:
     post:
       tags:
         - 'Cart'
@@ -860,8 +839,28 @@ paths:
         '400':
           description: Bad Request.
 
+  /cart/{id}:
+    delete:
+      tags:
+        - 'Cart'
+      summary: Removes item from cart.
+
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Item id.
+          schema:
+            $ref: '#/components/schemas/ID'
+
+      responses:
+        '204':
+          description: No Content.
+        '404':
+          description: Not Found.
+
   /cart/pay:
-    post:
+    put:
       tags:
         - 'Cart'
       summary: Move cart to orders.
