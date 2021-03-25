@@ -3,7 +3,7 @@ openapi: 3.0.0
 info:
   title: MTAA APP
   description: REST API documentation by Peter Škríba & Filip Čaplák.
-  version: 1.1.0
+  version: 2.0.0
 
 servers:
   - url: https://mtaa-app-backend.herokuapp.com
@@ -36,11 +36,11 @@ paths:
                 email:
                   type: string
                   format: email
-                  example: johndoe@example.com
+                  example: john@customer.com
                 password:
                   type: string
                   format: password
-                  example: password
+                  example: pass
               required:
                 - email
                 - password
@@ -52,18 +52,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthPayload'
+        '404':
+          description: User not found.
         '401':
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  user:
-                    type: object
-                  token:
-                    type: string
-                    example: null
+          description: Wrong password.
 
   /signup/customer:
     post:
@@ -78,10 +70,10 @@ paths:
             schema:
               type: object
               properties:
-                first_name:
+                firstName:
                   type: string
                   example: John
-                last_name:
+                lastName:
                   type: string
                   example: Doe
                 email:
@@ -93,8 +85,8 @@ paths:
                   format: password
                   example: password
               required:
-                - first_name
-                - last_name
+                - firstName
+                - lastName
                 - email
                 - password
 
@@ -105,18 +97,8 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthPayload'
-        '401':
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  user:
-                    type: object
-                  token:
-                    type: string
-                    example: null
+        '400':
+          description: Customer already exists.
 
   /signup/service:
     post:
@@ -157,21 +139,13 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AuthPayload'
-        '401':
-          description: Unauthorized.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  user:
-                    type: object
-                  token:
-                    type: string
-                    example: null
+        '400':
+          description: Service already exists.
 
   /me:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - 'Authentication'
       summary: Returns logged user information.
@@ -190,21 +164,21 @@ paths:
                     type: string
                     format: email
                     example: johndoe@example.com
-                  first_name:
+                  firstName:
                     type: string
                     example: John
-                  last_name:
+                  lastName:
                     type: string
                     example: Doe
                   role:
-                    type: string
-                    enum: [CUSTOMER, SERVICE]
-                    example: CUSTOMER
+                    $ref: '#/components/schemas/Role'
         '401':
           description: Unauthorized.
 
   /services:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - 'Services'
       summary: Returns list of services according to filter.
@@ -250,8 +224,10 @@ paths:
                       example: 4.5
                     category:
                       $ref: '#/components/schemas/ServiceCategory'
-        '400':
-          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /services/{id}:
     get:
@@ -294,6 +270,10 @@ paths:
                     example: www.pizzatown.com
                   category:
                     $ref: '#/components/schemas/ServiceCategory'
+                  openingHours:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/OpeningHour'
                   address:
                     type: object
                     properties:
@@ -303,16 +283,16 @@ paths:
                       city:
                         type: string
                         example: Bratislava
-                      address:
+                      street:
                         type: string
                         example: Janka Kráľa 553/5
-                      postal_code:
-                        type: number
-                        example: 95806
-        '404':
-          description: Not Found.
+                      postalCode:
+                        type: string
+                        example: '95806'
 
     delete:
+      security:
+        - bearerAuth: []
       tags:
         - 'Services'
       summary: Removes service from favorites.
@@ -330,6 +310,10 @@ paths:
           description: No Content.
         '404':
           description: Not Found.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /services/{id}/menu:
     get:
@@ -344,17 +328,6 @@ paths:
           description: Service id.
           schema:
             $ref: '#/components/schemas/ID'
-        - in: query
-          name: search
-          description: Returns services which names match the given string.
-          schema:
-            type: string
-            example: Pizza
-        - in: query
-          name: category
-          description: Returns services which belongs to selected category.
-          schema:
-            $ref: '#/components/schemas/ServiceCategory'
 
       responses:
         '200':
@@ -376,13 +349,15 @@ paths:
                     price:
                       type: number
                       example: 4.99
-                    category:
-                      $ref: '#/components/schemas/ItemCategory'
-        '404':
-          description: Not found.
+                    categories:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ItemCategory'
 
   /services/favorite:
-    post:
+    put:
+      security:
+        - bearerAuth: []
       tags:
         - 'Services'
       summary: Add service to favorites.
@@ -404,9 +379,15 @@ paths:
           description: No Content.
         '404':
           description: Not Found.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /orders:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - 'Orders'
       summary: Returns a list of orders.
@@ -440,10 +421,10 @@ paths:
                           type: string
                           format: email
                           example: johndoe@example.com
-                        first_name:
+                        firstName:
                           type: string
                           example: John
-                        last_name:
+                        lastName:
                           type: string
                           example: Doe
                     items:
@@ -455,9 +436,13 @@ paths:
                         price:
                           type: number
                           example: 15.99
+        '401':
+          description: Unauthorized.
 
   /orders/{id}:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - 'Orders'
       summary: Returns order detail.
@@ -512,8 +497,10 @@ paths:
                             time:
                               type: number
                               example: 30
-                            category:
-                              $ref: '#/components/schemas/ItemCategory'
+                            categories:
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/ItemCategory'
                   customer:
                     type: object
                     properties:
@@ -523,10 +510,10 @@ paths:
                         type: string
                         format: email
                         example: johndoe@example.com
-                      first_name:
+                      firstName:
                         type: string
                         example: John
-                      last_name:
+                      lastName:
                         type: string
                         example: Doe
                       phone:
@@ -541,17 +528,19 @@ paths:
                           city:
                             type: string
                             example: Bratislava
-                          address:
+                          street:
                             type: string
                             example: Janka Kráľa 553/5
-                          postal_code:
-                            type: number
-                            example: 95806
-        '404':
-          description: Not Found.
+                          postalCode:
+                            type: string
+                            example: '95806'
+        '401':
+          description: Unauthorized.
 
   /orders/status:
     put:
+      security:
+        - bearerAuth: []
       tags:
         - 'Orders'
       summary: Updates order status.
@@ -585,9 +574,15 @@ paths:
                     $ref: '#/components/schemas/Status'
         '404':
           description: Not found.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /items:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - 'Items'
       summary: Returns list of items.
@@ -595,7 +590,7 @@ paths:
       parameters:
         - in: query
           name: search
-          description: Returns services which names match the given string.
+          description: Returns items which names match the given string.
           schema:
             type: string
             example: Chicken
@@ -620,10 +615,18 @@ paths:
                     price:
                       type: number
                       example: 4.99
-                    category:
-                      $ref: '#/components/schemas/ItemCategory'
+                    categories:
+                      type: array
+                      items:
+                        $ref: '#/components/schemas/ItemCategory'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
     post:
+      security:
+        - bearerAuth: []
       tags:
         - 'Items'
       summary: Creates item.
@@ -666,6 +669,10 @@ paths:
           description: Created.
         '400':
           description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /items/{id}:
     get:
@@ -707,10 +714,14 @@ paths:
                   time:
                     type: number
                     example: 15
-                  category:
-                    $ref: '#/components/schemas/ItemCategory'
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/ItemCategory'
 
     delete:
+      security:
+        - bearerAuth: []
       tags:
         - 'Items'
       summary: Deletes item.
@@ -728,9 +739,15 @@ paths:
           description: No Content.
         '404':
           description: Not Found.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /cart:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - 'Cart'
       summary: Returns cart information.
@@ -776,8 +793,10 @@ paths:
                             price:
                               type: number
                               example: 9.99
-                            category:
-                              $ref: '#/components/schemas/ItemCategory'
+                            categories:
+                              type: array
+                              items:
+                                $ref: '#/components/schemas/ItemCategory'
                   customer:
                     type: object
                     properties:
@@ -792,14 +811,20 @@ paths:
                           city:
                             type: string
                             example: Bratislava
-                          address:
+                          street:
                             type: string
                             example: Janka Kráľa 553/5
-                          postal_code:
-                            type: number
-                            example: 95806
+                          postalCode:
+                            type: string
+                            example: '95806'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
     post:
+      security:
+        - bearerAuth: []
       tags:
         - 'Cart'
       summary: Add item to cart.
@@ -835,12 +860,20 @@ paths:
                       id:
                         $ref: '#/components/schemas/ID'
         '404':
-          description: Not Found.
+          description: Item Not Found.
         '400':
           description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
+        '406':
+          description: Item from another service.
 
   /cart/{id}:
     delete:
+      security:
+        - bearerAuth: []
       tags:
         - 'Cart'
       summary: Removes item from cart.
@@ -858,21 +891,33 @@ paths:
           description: No Content.
         '404':
           description: Not Found.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /cart/pay:
     put:
+      security:
+        - bearerAuth: []
       tags:
         - 'Cart'
       summary: Move cart to orders.
 
       responses:
-        '201':
+        '200':
           description: OK.
         '404':
           description: Not Found.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /profile/customer:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - 'Profile'
       summary: Returns customer profile informations.
@@ -889,10 +934,10 @@ paths:
                     type: string
                     format: email
                     example: johndoe@example.com
-                  first_name:
+                  firstName:
                     type: string
                     example: John
-                  last_name:
+                  lastName:
                     type: string
                     example: Doe
                   phone:
@@ -911,14 +956,20 @@ paths:
                       city:
                         type: string
                         example: Bratislava
-                      address:
+                      street:
                         type: string
                         example: Janka Kráľa 553/5
-                      postal_code:
-                        type: number
-                        example: 95806
+                      postalCode:
+                        type: string
+                        example: '95806'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
     put:
+      security:
+        - bearerAuth: []
       tags:
         - 'Profile'
       summary: Updates customer profile informations.
@@ -930,10 +981,10 @@ paths:
             schema:
               type: object
               properties:
-                first_name:
+                firstName:
                   type: string
                   example: John
-                last_name:
+                lastName:
                   type: string
                   example: Doe
                 phone:
@@ -950,10 +1001,10 @@ paths:
               schema:
                 type: object
                 properties:
-                  first_name:
+                  firstName:
                     type: string
                     example: John
-                  last_name:
+                  lastName:
                     type: string
                     example: Doe
                   phone:
@@ -961,11 +1012,15 @@ paths:
                     example: 0917 787 236
                   payment:
                     $ref: '#/components/schemas/Payment'
-        '400':
-          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /profile/service:
     get:
+      security:
+        - bearerAuth: []
       tags:
         - 'Profile'
       summary: Returns service profile informations.
@@ -1004,14 +1059,20 @@ paths:
                       city:
                         type: string
                         example: Bratislava
-                      address:
+                      street:
                         type: string
                         example: Janka Kráľa 553/5
-                      postal_code:
-                        type: number
-                        example: 95806
+                      postalCode:
+                        type: string
+                        example: '95806'
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
     put:
+      security:
+        - bearerAuth: []
       tags:
         - 'Profile'
       summary: Updates service profile informations.
@@ -1054,11 +1115,15 @@ paths:
                   web:
                     type: string
                     example: www.pizzatown.com
-        '400':
-          description: Bad Request.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /profile/address:
     post:
+      security:
+        - bearerAuth: []
       tags:
         - 'Profile'
       summary: Upserts address.
@@ -1078,21 +1143,21 @@ paths:
                 city:
                   type: string
                   example: Bratislava
-                address:
+                street:
                   type: string
                   example: Janka Kráľa 553/5
-                postal_code:
-                  type: number
-                  example: 95806
+                postalCode:
+                  type: string
+                  example: '95806'
               required:
                 - country
                 - city
-                - address
-                - postal_code
+                - street
+                - postalCode
 
       responses:
         '201':
-          description: 'Created/Edited'
+          description: 'Created/Edited.'
           content:
             application/json:
               schema:
@@ -1106,14 +1171,21 @@ paths:
                   city:
                     type: string
                     example: Bratislava
-                  address:
+                  street:
                     type: string
                     example: Janka Kráľa 553/5
-                  postal_code:
-                    type: number
-                    example: 95806
+                  postalCode:
+                    type: string
+                    example: '95806'
+        '401':
+          description: Unauthorized.
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
   schemas:
     AuthPayload:
       properties:
@@ -1127,12 +1199,28 @@ components:
               format: email
               example: johndoe@example.com
             role:
-              type: string
-              enum: [CUSTOMER, SERVICE]
-              example: CUSTOMER
+              $ref: '#/components/schemas/Role'
         token:
           type: string
           example: eyJhbGciOiJIezI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI2OGRkNGM2LTVmN2ItNDFjZC04OGI4LTcxMDcwZWE345U3NSIsImVtYWlsIjoiam9obmJvdGhAZXhhbXBsZS5jb20iLCJpYXQiOjE2MTQ5NjIxNTcfemV4cCI6MTYxNzU1NDE1N30.-tlQW2ZUJRHWJ6o1R1_BX2D_CuUBpauoHLr1bd13Ifg
+
+    OpeningHour:
+      properties:
+        day:
+          $ref: '#/components/schemas/Day'
+        from:
+          type: string
+          format: date-time
+        to:
+          type: string
+          format: date-time
+
+    Role:
+      type: string
+      enum:
+        - CUSTOMER
+        - SERVICE
+      example: CUSTOMER
 
     ID:
       type: string
@@ -1178,3 +1266,15 @@ components:
         - MEAT
         - DESSERT
       example: PIZZA
+
+    Day:
+      type: string
+      enum:
+        - MONDAY
+        - TUESDAY
+        - WEDNESDAY
+        - THURSDAY
+        - FRIDAY
+        - SATURDAY
+        - SUNDAY
+      example: MONDAY
