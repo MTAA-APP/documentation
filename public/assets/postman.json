@@ -1,0 +1,3653 @@
+{
+	"info": {
+		"_postman_id": "90d92518-5aae-4aec-8838-5b123d2616d3",
+		"name": "MTAA APP",
+		"description": "REST API documentation by Peter Škríba & Filip Čaplák.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "auth",
+			"item": [
+				{
+					"name": "Returns a logged user and auth token",
+					"item": [
+						{
+							"name": "OK customer",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var res = pm.response.json()\r",
+											"\r",
+											"\r",
+											"pm.collectionVariables.set('tokenCustomer', res.token)\r",
+											"\r",
+											"\r",
+											"pm.test(\"Header test\", () => {\r",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"john@customer.com\",\n    \"password\": \"pass\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/signin",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OK service",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var res = pm.response.json()\r",
+											"\r",
+											"pm.collectionVariables.set('tokenService', res.token)\r",
+											"\r",
+											"\r",
+											"pm.test(\"Header test\", () => {\r",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"john@service.com\",\n    \"password\": \"pass\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/signin",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong password",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var res = pm.response.json()\r",
+											"\r",
+											"pm.test(\"Header test\", () => {\r",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"john@customer.com\",\n    \"password\": \"this pass is wrong :)\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/signin",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "User not found",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"var res = pm.response.json()\r",
+											"\r",
+											"pm.test(\"Header test\", () => {\r",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')\r",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"email\": \"notfound@customer.com\",\n    \"password\": \"pass\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/signin",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"signin"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Returns logged user information",
+					"item": [
+						{
+							"name": "OK customer",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    const token = pm.collectionVariables.get(\"tokenCustomer\")",
+											"",
+											"    if (!token) {",
+											"        pm.response.to.have.status(401)",
+											"        pm.expect(res).to.be.null",
+											"    } else {",
+											"        pm.response.to.have.status(200)",
+											"        pm.expect(res).to.be.an(\"object\")",
+											"    }",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "OK service",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    const token = pm.collectionVariables.get(\"tokenService\")",
+											"",
+											"    if (!token) {",
+											"        pm.response.to.have.status(401)",
+											"        pm.expect(res).to.be.null",
+											"    } else {",
+											"        pm.response.to.have.status(200)",
+											"        pm.expect(res).to.be.an(\"object\")",
+											"    }",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    pm.response.to.have.status(401)",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/me",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"me"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "signup",
+			"item": [
+				{
+					"name": "Creates customer and generates auth token.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Header test\", () => {\r",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')\r",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"email\": \"johndoe@example.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/signup/customer",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"signup",
+								"customer"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Creates service and generates auth token.",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Header test\", () => {",
+									"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+									"})"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Pizza town\",\n    \"category\": \"PIZZA\",\n    \"email\": \"pizzatown@example.com\",\n    \"password\": \"password\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/signup/service",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"signup",
+								"service"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "services",
+			"item": [
+				{
+					"name": "Returns list of services according to filter",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"Response format\", () => {",
+											"  pm.expect(res).to.be.an('array')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "PIZZA",
+											"disabled": true
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    pm.response.to.have.status(401)",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services?favorites=false&search=Pizza&category=PIZZA",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services"
+									],
+									"query": [
+										{
+											"key": "favorites",
+											"value": "false",
+											"description": "Returns favorite services."
+										},
+										{
+											"key": "search",
+											"value": "Pizza",
+											"description": "Returns services which names match the given string."
+										},
+										{
+											"key": "category",
+											"value": "PIZZA",
+											"description": "Returns services which belongs to selected category."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    pm.response.to.have.status(403)",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services?favorites=false&search=Pizza&category=PIZZA",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services"
+									],
+									"query": [
+										{
+											"key": "favorites",
+											"value": "false",
+											"description": "Returns favorite services."
+										},
+										{
+											"key": "search",
+											"value": "Pizza",
+											"description": "Returns services which names match the given string."
+										},
+										{
+											"key": "category",
+											"value": "PIZZA",
+											"description": "Returns services which belongs to selected category."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add service to favorites",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/services/favorite",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										"favorite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"dsadasdadascsacsafsafsad\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/services/favorite",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										"favorite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    pm.response.to.have.status(401)",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/services/favorite",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										"favorite"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    pm.response.to.have.status(403)",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/services/favorite",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										"favorite"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Returns service detail",
+					"item": [
+						{
+							"name": "Returns service detail.",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(200);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "5eb8ff5a-96f7-49c4-a166-af582009482f",
+											"description": "(Required) Service id."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Removes service from favorites",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "5eb8ff5a-96f7-49c4-a166-af582009482f",
+											"description": "(Required) Service id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(401);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "5eb8ff5a-96f7-49c4-a166-af582009482f",
+											"description": "(Required) Service id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    pm.response.to.have.status(403)",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "5eb8ff5a-96f7-49c4-a166-af582009482f",
+											"description": "(Required) Service id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(404);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "dsadfa11",
+											"description": "(Required) Service id."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Returns list of items of given service",
+					"item": [
+						{
+							"name": "Returns list of items of given service.",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(200);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/services/:id/menu",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"services",
+										":id",
+										"menu"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "5eb8ff5a-96f7-49c4-a166-af582009482f",
+											"description": "(Required) Service id."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "orders",
+			"item": [
+				{
+					"name": "Returns a list of orders",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"Response format\", () => {",
+											"  pm.expect(res).to.be.an('array')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(401);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/orders",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Returns order detail",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(200);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/orders/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "a5a7a7a0-2089-4165-a137-9789d6ab95dd",
+											"description": "(Required) Order id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(401);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/orders/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "a5a7a7a0-2089-4165-a137-9789d6ab95dd",
+											"description": "(Required) Order id."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Updates order status",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"a5a7a7a0-2089-4165-a137-9789d6ab95dd\",\n    \"status\": \"WAITING\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"status"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(401);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"a5a7a7a0-2089-4165-a137-9789d6ab95dd\",\n    \"status\": \"WAITING\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"status"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Status test\", () => {",
+											"    pm.response.to.have.status(403)",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"a5a7a7a0-2089-4165-a137-9789d6ab95dd\",\n    \"status\": \"WAITING\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"status"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(404);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"a5dsadsadsadsada\",\n    \"status\": \"WAITING\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/orders/status",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"orders",
+										"status"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "items",
+			"item": [
+				{
+					"name": "Returns list of items",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"Response format\", () => {",
+											"  pm.expect(res).to.be.an('array')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/items?search=pizza",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "pizza",
+											"description": "Returns items which names match the given string."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(401);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/items?search=pizza",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "pizza",
+											"description": "Returns items which names match the given string."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(403);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/items?search=pizza",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items"
+									],
+									"query": [
+										{
+											"key": "search",
+											"value": "pizza",
+											"description": "Returns items which names match the given string."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Creates item",
+					"item": [
+						{
+							"name": "Created",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"\",\n    \"name\": \"Meal2\",\n    \"price\": 5,\n    \"weight\": 400,\n    \"categories\": [\n        \"PIZZA\"\n    ],\n    \"picture\": \"sit incididunt velit\",\n    \"time\": 30,\n    \"description\": \"adipisicing eiusmod\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/items",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Bad request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Meal2\",\n    \"price\": 5,\n    \"weight\": 400,\n    \"categories\": [\n        \"PIZZA\",\n    ],\n    \"photo\": \"sit incididunt velit\",\n    \"time\": 30,\n    \"description\": \"adipisicing eiusmod\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/items",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Meal2\",\n    \"price\": 5,\n    \"weight\": 400,\n    \"categories\": [\n        \"PIZZA\"\n    ],\n    \"photo\": \"sit incididunt velit\",\n    \"time\": 30,\n    \"description\": \"adipisicing eiusmod\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/items",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"Meal2\",\n    \"price\": 5,\n    \"weight\": 400,\n    \"categories\": [\n        \"PIZZA\"\n    ],\n    \"photo\": \"sit incididunt velit\",\n    \"time\": 30,\n    \"description\": \"adipisicing eiusmod\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/items",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Returns item detail",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(200);",
+											"})",
+											"",
+											"pm.test(\"Response format\", () => {",
+											"  pm.expect(res).to.be.an('object')",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/items/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "d5788dac-13ef-4bbb-bb39-13f60d3b73d8",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Deletes item",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/items/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "d5788dac-13ef-4bbb-bb39-13f60d3b73d8",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/items/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "d5788dac-13ef-4bbb-bb39-13f60d3b73d8",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/items/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "d5788dac-13ef-4bbb-bb39-13f60d3b73d8",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/items/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"items",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "dsa1da1da",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "cart",
+			"item": [
+				{
+					"name": "Returns cart information",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"const res = pm.response.json()",
+											"",
+											"pm.test(\"Header test\", () => {",
+											"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+											"})",
+											"",
+											"pm.test(\"Response status\", () => {",
+											"    pm.response.to.have.status(200);",
+											"})"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Add item to cart",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/cart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Bad request",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"\",\n    \"this is\" : \"bad\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/cart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"this is\" : \"bad\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/cart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/cart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Item not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"id\": \"dasdsadsa\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/cart",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Removes item from cart",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "123e4567-e89b-12d3-a456-426614174000",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "123e4567-e89b-12d3-a456-426614174000",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "123e4567-e89b-12d3-a456-426614174000",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Not found",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart/:id",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart",
+										":id"
+									],
+									"variable": [
+										{
+											"key": "id",
+											"value": "dsadsda",
+											"description": "(Required) Item id."
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "Move cart to orders",
+					"item": [
+						{
+							"name": "OK",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart/pay",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart",
+										"pay"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart/pay",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart",
+										"pay"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Wrong user role",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenService}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "PUT",
+								"header": [],
+								"url": {
+									"raw": "{{baseUrl}}/cart/pay",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"cart",
+										"pay"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		},
+		{
+			"name": "profile",
+			"item": [
+				{
+					"name": "customer",
+					"item": [
+						{
+							"name": "Returns customer profile informations",
+							"item": [
+								{
+									"name": "OK",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const res = pm.response.json()",
+													"",
+													"pm.test(\"Header test\", () => {",
+													"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+													"})"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{tokenCustomer}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/profile/customer",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"customer"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Unauthorized",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/profile/customer",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"customer"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Wrong user role",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{tokenService}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/profile/customer",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"customer"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Updates customer profile informations",
+							"item": [
+								{
+									"name": "OK",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{tokenCustomer}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phone\": \"0917 787 236\",\n    \"payment\": \"CASH\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/profile/customer",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"customer"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Unauthorized",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phone\": \"0917 787 236\",\n    \"payment\": \"CASH\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/profile/customer",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"customer"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Wrong user role",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{tokenService}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"firstName\": \"John\",\n    \"lastName\": \"Doe\",\n    \"phone\": \"0917 787 236\",\n    \"payment\": \"CASH\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/profile/customer",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"customer"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "service",
+					"item": [
+						{
+							"name": "Returns service profile informations",
+							"item": [
+								{
+									"name": "OK",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const res = pm.response.json()",
+													"",
+													"pm.test(\"Header test\", () => {",
+													"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+													"})"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{tokenService}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/profile/service",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"service"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Unauthorized",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/profile/service",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"service"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Wrong user role",
+									"event": [
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{tokenCustomer}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "GET",
+										"header": [],
+										"url": {
+											"raw": "{{baseUrl}}/profile/service",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"service"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						},
+						{
+							"name": "Updates service profile informations",
+							"item": [
+								{
+									"name": "OK",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													"const res = pm.response.json()",
+													"",
+													"pm.test(\"Header test\", () => {",
+													"  pm.expect(pm.response.headers.get('Content-Type')).to.eql('application/json; charset=utf-8')",
+													"})"
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{tokenService}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"picture\": \"nisi culpa incididunt\",\n    \"name\": \"Pizza Town\",\n    \"phone\": \"0917 787 236\",\n    \"web\": \"www.pizzatown.com\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/profile/service",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"service"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Unauthorized",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"picture\": \"nisi culpa incididunt\",\n    \"name\": \"Pizza Town\",\n    \"phone\": \"0917 787 236\",\n    \"web\": \"www.pizzatown.com\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/profile/service",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"service"
+											]
+										}
+									},
+									"response": []
+								},
+								{
+									"name": "Wrong user role",
+									"event": [
+										{
+											"listen": "prerequest",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										},
+										{
+											"listen": "test",
+											"script": {
+												"exec": [
+													""
+												],
+												"type": "text/javascript"
+											}
+										}
+									],
+									"request": {
+										"auth": {
+											"type": "bearer",
+											"bearer": [
+												{
+													"key": "token",
+													"value": "{{tokenCustomer}}",
+													"type": "string"
+												}
+											]
+										},
+										"method": "PUT",
+										"header": [
+											{
+												"key": "Content-Type",
+												"value": "application/json"
+											}
+										],
+										"body": {
+											"mode": "raw",
+											"raw": "{\n    \"picture\": \"nisi culpa incididunt\",\n    \"name\": \"Pizza Town\",\n    \"phone\": \"0917 787 236\",\n    \"web\": \"www.pizzatown.com\"\n}"
+										},
+										"url": {
+											"raw": "{{baseUrl}}/profile/service",
+											"host": [
+												"{{baseUrl}}"
+											],
+											"path": [
+												"profile",
+												"service"
+											]
+										}
+									},
+									"response": []
+								}
+							]
+						}
+					]
+				},
+				{
+					"name": "Upserts address",
+					"item": [
+						{
+							"name": "OK",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{tokenCustomer}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"country\": \"Slovakia\",\n    \"city\": \"Bratislava\",\n    \"street\": \"Janka Kráľa 553/5\",\n    \"postalCode\": \"95806\",\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/profile/address",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"profile",
+										"address"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Unauthorized",
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"country\": \"Slovakia\",\n    \"city\": \"Bratislava\",\n    \"street\": \"Janka Kráľa 553/5\",\n    \"postalCode\": \"95806\",\n    \"id\": \"123e4567-e89b-12d3-a456-426614174000\"\n}"
+								},
+								"url": {
+									"raw": "{{baseUrl}}/profile/address",
+									"host": [
+										"{{baseUrl}}"
+									],
+									"path": [
+										"profile",
+										"address"
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://mtaa-app-backend.herokuapp.com"
+		},
+		{
+			"key": "tokenCustomer",
+			"value": ""
+		},
+		{
+			"key": "tokenService",
+			"value": ""
+		}
+	]
+}

@@ -5,3 +5,5 @@
 [YAML file](public/assets/documentation.yaml)
 
 [UAT](public/assets/UAT.pdf)
+
+[Postman collection](public/assets/postman.json)
