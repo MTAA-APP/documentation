@@ -438,6 +438,76 @@ paths:
                           example: 15.99
         '401':
           description: Unauthorized.
+        '403':
+          description: Wrong user role.
+
+  /orders/history:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - 'Orders'
+      summary: Returns a list of my orders.
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      $ref: '#/components/schemas/ID'
+                    status:
+                      $ref: '#/components/schemas/Status'
+                    payment:
+                      $ref: '#/components/schemas/Payment'
+                    createdAt:
+                      type: string
+                      format: date-time
+                    completedAt:
+                      type: string
+                      format: date-time
+                    total:
+                      type: number
+                      example: 28.35
+                    service:
+                      type: object
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/ID'
+                        name:
+                          type: string
+                          example: Pizza Town
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          $ref: '#/components/schemas/ID'
+                        amount:
+                          type: number
+                          example: 3
+                        total:
+                          type: number
+                          example: 15.50
+                        item:
+                          type: object
+                          properties:
+                            id:
+                              $ref: '#/components/schemas/ID'
+                            name:
+                              type: string
+                              name: Big Pizza
+                            price:
+                              type: number
+                              example: 6.99
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /orders/{id}:
     get:
@@ -869,6 +939,65 @@ paths:
           description: Wrong user role.
         '406':
           description: Item from another service.
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - 'Cart'
+      summary: Removes cart.
+
+      responses:
+        '204':
+          description: No Content.
+        '404':
+          description: Not Found.
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
+        '400':
+          description: Bad request.
+
+  /cart/info:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - 'Cart'
+      summary: Returns basic cart information.
+
+      responses:
+        '200':
+          description: OK.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  id:
+                    $ref: '#/components/schemas/ID'
+                  items:
+                    type: object
+                    properties:
+                      count:
+                        type: number
+                        example: 2
+                      price:
+                        type: number
+                        example: 6.99
+                  service:
+                    type: object
+                    properties:
+                      id:
+                        $ref: '#/components/schemas/ID'
+                      name:
+                        type: string
+                        example: Pizza Town
+        '401':
+          description: Unauthorized.
+        '403':
+          description: Wrong user role.
 
   /cart/{id}:
     delete:
